@@ -1,4 +1,3 @@
-#!/usr/bin/env perl
 use bytes;
 my %strings;
 while (<>) {
@@ -15,15 +14,16 @@ while (<>) {
 		my $len = length($str) + 1;
 		$strings{$id} = $str;
 		my $rdi;
-		if ($mode == "echo") {
+		if ($mode eq "echo") {
 			$rdi = 1;
 		} else {
 			$rdi = 2;
 		}
-		"mov rax, 1\n\tmov rdi, $rdi\n\tlea rsi, [$id]\n\tmov rdx, $len\n\tsyscall"
+		"mov rax, 1\nmov rdi, $rdi\nlea rsi, [$id]\nmov rdx, $len\nsyscall"
 	!ge;
 	print "$line";
 }
+print ".section .rodata\n";
 while (my ($i, $s) = each %strings) {
-	print "$i:\n\t.asciz \"$s\\n\"\n";
+	print "$i:\n.asciz \"$s\\n\"\n";
 }

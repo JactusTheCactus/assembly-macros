@@ -1,6 +1,3 @@
-.global _start
-.intel_syntax noprefix
-_start:
 mov rax, 1
 mov rdi, 1
 lea rsi, [hello_world]
