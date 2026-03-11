@@ -7,10 +7,10 @@ dirs=(
 )
 rm -rf "${dirs[@]}"
 mkdir -p "${dirs[@]}"
-s=src/main.s
-m=macro/main
-o=dist/main.o
-b=bin/main
+s=src/$1.s
+m=macro/$1
+d=dist/$1.o
+b=bin/$1
 cp "$s" "$m.s"
 for i in scripts/*; do
 	c=$m.${i#scripts/}
@@ -18,6 +18,6 @@ for i in scripts/*; do
 	"./$i" < "$m.s" > "$c.s"
 	cp "$c.s" "$m.s"
 done
-as "$m.s" -o "$o"
-ld "$o" -o "$b"
+as "$m.s" -o "$d"
+ld "$d" -o "$b"
 "./$b"
