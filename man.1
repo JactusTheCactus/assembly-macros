@@ -1,0 +1,67 @@
+.TH AMC86 1
+.SH NAME
+amc86 \- x86\-64 assembly macro compiler
+.SH SYNOPSIS
+.B amc86
+[\fIFILE\fR]
+[\fB\-h?\fR|\fB\-\-help\fR]
+.SH DESCRIPTION
+.P
+\fBamc86\fR is a tool that compiles programs
+written in a shell\-like DSL into \fIx86\-64 assembly\fR,
+assembles the result,
+and links it into a binary.
+.SH OPTIONS
+.TP
+.B \fIFILE\fR
+Input \fBamc86\fR source file
+.TP
+.B \-?, \-h, \-\-help
+Display usage information.
+.SH COMMANDS
+.TP
+.B echo MESSAGE:str
+Write \fIMESSAGE\fR to standard output.
+.TP
+.B err ERROR:str
+Write \fIERROR\fR to standard error.
+.TP
+.B exit CODE:u8
+Terminate the program with exit code \fICODE\fR.
+.SH LEXICAL RULES
+.TP
+.B Commands
+Commands are prefixed with a dollar sign '$'
+.TP
+.B Comments
+Text following a hash (#) is commented out. \fI(Not yet implemented)\fR
+.TP
+.B Statements
+Statements must be split with either semicolons (;) or newlines (\\n).
+.TP
+.B Strings
+Strings are quoted with single quotes (') or double quotes (").
+.TP
+.B Whitespace
+Tokens are separated by whitespace.
+.SH EXAMPLES
+.P
+$echo "Hello, World!"; $exit 0
+.P
+$err 'Uh\-Oh!'; $exit 1
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+Invalid Arguments.
+.TP
+.B 2
+Macro compilation error.
+.TP
+.B 3
+Assembler error.
+.TP
+.B 4
+Linker error.

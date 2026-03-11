@@ -2,9 +2,10 @@
 .intel_syntax noprefix
 
 _start:
+$let str hello_world_0 = "Hello, World!"
 	mov rax, 1
 	mov rdi, 1
-	lea rsi, [hello_world]
+	lea rsi, [rip + hello_world_0]
 	mov rdx, 14
 	syscall
 
@@ -12,7 +13,3 @@ _start:
 	mov rdi, 0
 	syscall
 
-.section .rodata
-
-hello_world:
-	.asciz "Hello, World!\n"

@@ -10,32 +10,61 @@ dirs=(
 )
 rm -rf "${dirs[@]}"
 mkdir -p "${dirs[@]}"
-s=src/main.s
-m=macro/main
-o=dist/main.o
-b=bin/main
-cp "$s" "$m.s"
+s=src/$1.s
+m=macro/$1
+cp "$s" "$m.0.s"
+c=$m.0
 for i in scripts/*; do
+	c_=$c
 	c=$m.${i#scripts/}
 	c=${c%.pl}
-	perl "$i" < "$m.s" > "$c.s"
-	cp "$c.s" "$m.s"
+	"./$i" < "$c_.s" > "$c.s"
 done
-cat "$m.s"
-as "$m.s" -o "$o"
-ld "$o" -o "$b"
+d=dist/$1.o
+as "$c.s" -o "$d"
+b=bin/$1
+if ld "$d" -o "$b"
+	then rm -rf dist
+fi
 "./$b"
 ```
-# `scripts/exit.pl`
+# `scripts/1.split.pl`
 ```pl
+#!/usr/bin/env perl
+while (<>) {
+	my @lines = split(/;\s*/, $_);
+	for my $line (@lines) {
+		print "$line\n";
+	}
+}
+```
+# `scripts/2.main.pl`
+```pl
+#!/usr/bin/env perl
+print
+	".global _start\n" .
+	".intel_syntax noprefix\n\n" .
+	"_start:\n";
+while (<>) {
+	print $_;
+}
+```
+# `scripts/3.exit.pl`
+```pl
+#!/usr/bin/env perl
 while (<>) {
 	my $line = $_;
-	$line =~ s|\$exit (\d+)|mov rax, 60\nmov rdi, $1\nsyscall|g;
+	$line =~ s|\$exit (\d+)|
+		"\tmov rax, 60\n" .
+		"\tmov rdi, $1\n" .
+		"\tsyscall\n"
+	|ge;
 	print $line;
 }
 ```
-# `scripts/log.pl`
+# `scripts/4.log.pl`
 ```pl
+#!/usr/bin/env perl
 use bytes;
 my %strings;
 while (<>) {
@@ -57,24 +86,22 @@ while (<>) {
 		} else {
 			$rdi = 2;
 		}
-		"mov rax, 1\nmov rdi, $rdi\nlea rsi, [$id]\nmov rdx, $len\nsyscall"
+		"\tmov rax, 1\n" .
+		"\tmov rdi, $rdi\n" .
+		"\tlea rsi, [$id]\n" .
+		"\tmov rdx, $len\n" .
+		"\tsyscall\n"
 	!ge;
-	print "$line";
+	print $line;
 }
-print ".section .rodata\n";
+print ".section .rodata\n\n";
 while (my ($i, $s) = each %strings) {
-	print "$i:\n.asciz \"$s\\n\"\n";
-}
-```
-# `scripts/main.pl`
-```pl
-print ".global _start\n.intel_syntax noprefix\n_start:\n";
-while (<>) {
-	print $_;
+	print
+		"$i:\n" .
+		"\t.asciz \"$s\\n\"\n";
 }
 ```
 # `src/main.s`
 ```s
-$echo "Hello, World!"
-$exit 0
+$echo "Hello, World!"; $exit 0
 ```
