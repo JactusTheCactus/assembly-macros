@@ -15,10 +15,9 @@ cp "$s" "$m.s"
 for i in scripts/*; do
 	c=$m.${i#scripts/}
 	c=${c%.pl}
-	perl "$i" < "$m.s" > "$c.s"
+	"./$i" < "$m.s" > "$c.s"
 	cp "$c.s" "$m.s"
 done
-cat "$m.s"
 as "$m.s" -o "$o"
 ld "$o" -o "$b"
 "./$b"

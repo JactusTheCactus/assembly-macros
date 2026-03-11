@@ -1,5 +1,10 @@
+#!/usr/bin/env perl
 while (<>) {
 	my $line = $_;
-	$line =~ s|\$exit (\d+)|mov rax, 60\nmov rdi, $1\nsyscall|g;
+	$line =~ s|\$exit (\d+)|
+		"\tmov rax, 60\n" .
+		"\tmov rdi, $1\n" .
+		"\tsyscall\n"
+	|ge;
 	print $line;
 }

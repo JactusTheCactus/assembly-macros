@@ -1,3 +1,4 @@
+#!/usr/bin/env perl
 use bytes;
 my %strings;
 while (<>) {
@@ -19,11 +20,17 @@ while (<>) {
 		} else {
 			$rdi = 2;
 		}
-		"mov rax, 1\nmov rdi, $rdi\nlea rsi, [$id]\nmov rdx, $len\nsyscall"
+		"\tmov rax, 1\n" .
+		"\tmov rdi, $rdi\n" .
+		"\tlea rsi, [$id]\n" .
+		"\tmov rdx, $len\n" .
+		"\tsyscall\n"
 	!ge;
-	print "$line";
+	print $line;
 }
-print ".section .rodata\n";
+print ".section .rodata\n\n";
 while (my ($i, $s) = each %strings) {
-	print "$i:\n.asciz \"$s\\n\"\n";
+	print
+		"$i:\n" .
+		"\t.asciz \"$s\\n\"\n";
 }
