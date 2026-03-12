@@ -1,7 +1,6 @@
 #!/usr/bin/env perl
 while (<>) {
-	my @lines = split(/;\s*/, $_);
-	for my $line (@lines) {
+	for my $line (split(/;\s*/, $_)) {
 		print "$line\n";
 	}
 }

@@ -18,11 +18,11 @@ sub fn_let {
 	}
 	my $len = 1 + length $str;
 	$vars{$var} = $str;
-	return;
+	return
 }
 while (<>) {
 	my $line = $_;
-	$line =~ s/\$let (\w[\w\d]*) (.*?) = "(.*?)"/fn_let($1, $2, $3);/gei;
+	$line =~ s/\$let (\w[\w\d]*) (.*?) = "(.*?)"/fn_let($1, $2, $3)/gei;
 	print $line;
 }
 print ".section .rodata\n\n";
